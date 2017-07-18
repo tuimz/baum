@@ -56,9 +56,9 @@ class CategoryHierarchyTest extends CategoryTestCase
         $this->assertEquals(Category::root(), $this->categories('Root 1'));
     }
 
-    public function testAllLeavesStatic()
+    public function testLeavesStatic()
     {
-        $allLeaves = Category::allLeaves()->get();
+        $allLeaves = Category::leaves()->get();
 
         $this->assertCount(4, $allLeaves);
 
@@ -72,7 +72,7 @@ class CategoryHierarchyTest extends CategoryTestCase
 
     public function testAllTrunksStatic()
     {
-        $allTrunks = Category::allTrunks()->get();
+        $allTrunks = Category::trunks()->get();
 
         $this->assertCount(1, $allTrunks);
 

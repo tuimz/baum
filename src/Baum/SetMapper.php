@@ -3,14 +3,14 @@
 namespace Baum;
 
 use Closure;
-use Illuminate\Support\Contracts\ArrayableInterface;
+use Illuminate\Contracts\Support\Arrayable;
 
 class SetMapper
 {
     /**
      * Node instance for reference.
      *
-     * @var \Baum\Node
+     * @var Node|null
      */
     protected $node = null;
 
@@ -24,11 +24,10 @@ class SetMapper
     /**
      * Create a new \Baum\SetBuilder class instance.
      *
-     * @param \Baum\Node $node
-     *
-     * @return void
+     * @param Node $node
+     * @param string $childrenKeyName
      */
-    public function __construct($node, $childrenKeyName = 'children')
+    public function __construct(Node $node, $childrenKeyName = 'children')
     {
         $this->node = $node;
 
@@ -38,15 +37,14 @@ class SetMapper
     /**
      * Maps a tree structure into the database. Unguards & wraps in transaction.
      *
-     * @param   array|\Illuminate\Support\Contracts\ArrayableInterface
-     *
+     * @param array|Arrayable
      * @return bool
      */
     public function map($nodeList)
     {
         $self = $this;
 
-        return $this->wrapInTransaction(function () use ($self, $nodeList) {
+        return $this->wrapInTransaction(function() use ($self, $nodeList) {
             forward_static_call([get_class($self->node), 'unguard']);
             $result = $self->mapTree($nodeList);
             forward_static_call([get_class($self->node), 'reguard']);
@@ -59,13 +57,13 @@ class SetMapper
      * Maps a tree structure into the database without unguarding nor wrapping
      * inside a transaction.
      *
-     * @param   array|\Illuminate\Support\Contracts\ArrayableInterface
+     * @param   array|Arrayable
      *
      * @return bool
      */
     public function mapTree($nodeList)
     {
-        $tree = $nodeList instanceof ArrayableInterface ? $nodeList->toArray() : $nodeList;
+        $tree = $nodeList instanceof Arrayable ? $nodeList->toArray() : $nodeList;
 
         $affectedKeys = [];
 
