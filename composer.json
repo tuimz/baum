@@ -1,5 +1,5 @@
 {
-  "name": "dogado/baum",
+  "name": "dogadogmbh/baum",
   "type": "library",
   "description": "Baum is an implementation of the Nested Set pattern for Eloquent models.",
   "keywords": ["nested set", "laravel", "laravel 5", "eloquent", "database"],
@@ -14,6 +14,11 @@
       "name": "Gary Pearman",
       "email": "gaz@red-robot.co.uk",
       "homepage": "http://red-robot.co.uk"
+    },
+    {
+      "name": "Martin Seysen",
+      "email": "mse@dogado.de",
+      "homepage": "https://www.dogado.de"
     }
 
   ],
