@@ -1,6 +1,6 @@
 # Baum <a href="https://travis-ci.org/gazsp/baum"><img src="https://travis-ci.org/gazsp/baum.svg?branch=master"></a> [![Coverage Status](https://coveralls.io/repos/gazsp/baum/badge.svg?branch=master&service=github)](https://coveralls.io/github/gazsp/baum?branch=master) [![StyleCI](https://styleci.io/repos/47506280/shield)](https://styleci.io/repos/47506280)
 
-## Forked from [etrepat/baum](https://github.com/etrepat/baum) - Continuing development and fixing failing unit tests on Laravel 5.x
+## Forked from [gazsp/baum](https://github.com/gazsp/baum) - Continuing development and fixing failing unit tests on Laravel 5.x
 
 **If you find a bug, please file an issue and submit a pull request with a failing unit test**
 
@@ -100,7 +100,7 @@ ordinary trees are suddenly quite fast. Nifty, isn't it?
 Baum works with Laravel 5 onwards. You can add it to your `composer.json` file
 with:
 
-    "gazsp/baum": "~1.1"
+    "dogadogmbh/baum": "~1.1"
 
 Run `composer install` to install it.
 
