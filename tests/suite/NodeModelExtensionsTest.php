@@ -65,7 +65,7 @@ class NodeModelExtensionsTest extends PHPUnit_Framework_TestCase
 
         $closure = function () {
         };
-        $events->shouldReceive('listen')->once()->with('eloquent.moving: '.get_class(new Category()), $closure, 0);
+        $events->shouldReceive('listen')->once()->with('eloquent.moving: ' . get_class(new Category()), $closure, 0);
         Category::moving($closure);
 
         Category::unsetEventDispatcher();
@@ -81,7 +81,7 @@ class NodeModelExtensionsTest extends PHPUnit_Framework_TestCase
 
         $closure = function () {
         };
-        $events->shouldReceive('listen')->once()->with('eloquent.moved: '.get_class(new Category()), $closure, 0);
+        $events->shouldReceive('listen')->once()->with('eloquent.moved: ' . get_class(new Category()), $closure, 0);
         Category::moved($closure);
 
         Category::unsetEventDispatcher();
@@ -124,22 +124,22 @@ class NodeModelExtensionsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Some node', $node->name);
     }
 
-  /**
-   * @expectedException Illuminate\Database\Eloquent\ModelNotFoundException
-   */
-  public function testReloadThrowsExceptionIfNodeCannotBeLocated()
-  {
-      $node = Category::create(['name' => 'Some node']);
-      $this->assertNotNull($node->getKey());
+    /**
+     * @expectedException Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function testReloadThrowsExceptionIfNodeCannotBeLocated()
+    {
+        $node = Category::create(['name' => 'Some node']);
+        $this->assertNotNull($node->getKey());
 
-      $node->delete();
-      $this->assertNull($this->categories('Some node'));
-      $this->assertFalse($node->exists);
+        $node->delete();
+        $this->assertNull($this->categories('Some node'));
+        $this->assertFalse($node->exists);
 
-    // Fake persisted state, reload & expect failure
-    $node->exists = true;
-      $node->reload();
-  }
+        // Fake persisted state, reload & expect failure
+        $node->exists = true;
+        $node->reload();
+    }
 
     public function testNewNestedSetQueryUsesInternalBuilder()
     {
