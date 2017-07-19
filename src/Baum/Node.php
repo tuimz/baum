@@ -2,8 +2,6 @@
 
 namespace Baum;
 
-use Baum\Extensions\Eloquent\Collection;
-use Baum\Extensions\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -17,7 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
  * Nested sets are appropiate when you want either an ordered tree (menus,
  * commercial categories, etc.) or an efficient way of querying big trees.
  */
-abstract class Node extends Model
+abstract class Node extends \Baum\Extensions\Eloquent\Model
 {
     /**
      * Column name to store the reference to parent's node.
@@ -416,7 +414,7 @@ abstract class Node extends Model
      */
     public function newCollection(array $models = [])
     {
-        return new Collection($models);
+        return new \Baum\Extensions\Eloquent\Collection($models);
     }
 
     /**
@@ -708,7 +706,7 @@ abstract class Node extends Model
      * Get all the ancestor chain from the database including the current node.
      *
      * @param array $columns
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Baum\Extensions\Eloquent\Collection
      */
     public function getAncestorsAndSelf(array $columns = ['*'])
     {
@@ -721,7 +719,7 @@ abstract class Node extends Model
      *
      * @param array $columns
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Baum\Extensions\Eloquent\Collection
      */
     public function getAncestorsAndSelfWithoutRoot($columns = ['*'])
     {
@@ -744,7 +742,7 @@ abstract class Node extends Model
      *
      * @param array $columns
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Baum\Extensions\Eloquent\Collection
      */
     public function getAncestors($columns = ['*'])
     {
@@ -780,7 +778,7 @@ abstract class Node extends Model
      *
      * @param array $columns
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Baum\Extensions\Eloquent\Collection
      */
     public function getSiblingsAndSelf($columns = ['*'])
     {
@@ -802,7 +800,7 @@ abstract class Node extends Model
      *
      * @param array $columns
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Baum\Extensions\Eloquent\Collection
      */
     public function getSiblings($columns = ['*'])
     {
@@ -831,7 +829,7 @@ abstract class Node extends Model
      *
      * @param array $columns
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Baum\Extensions\Eloquent\Collection
      */
     public function getLeaves($columns = ['*'])
     {
@@ -861,7 +859,7 @@ abstract class Node extends Model
      *
      * @param array $columns
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Baum\Extensions\Eloquent\Collection
      */
     public function getTrunks($columns = ['*'])
     {
@@ -885,7 +883,7 @@ abstract class Node extends Model
      *
      * @param array $columns
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Baum\Extensions\Eloquent\Collection
      */
     public function getDescendantsAndSelf($columns = ['*'])
     {
@@ -903,7 +901,7 @@ abstract class Node extends Model
     /**
      * Retrieve all other nodes at the same depth,.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Baum\Extensions\Eloquent\Collection
      */
     public function getOthersAtSameDepth()
     {
@@ -927,7 +925,7 @@ abstract class Node extends Model
      *
      * @param array $columns
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Baum\Extensions\Eloquent\Collection
      */
     public function getDescendants($columns = ['*'])
     {
@@ -958,7 +956,7 @@ abstract class Node extends Model
      *
      * @param array $columns
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Baum\Extensions\Eloquent\Collection
      */
     public function getImmediateDescendants($columns = ['*'])
     {
