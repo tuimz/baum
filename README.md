@@ -1,4 +1,34 @@
-# Baum <a href="https://travis-ci.org/gazsp/baum"><img src="https://travis-ci.org/gazsp/baum.svg?branch=master"></a> [![Coverage Status](https://coveralls.io/repos/gazsp/baum/badge.svg?branch=master&service=github)](https://coveralls.io/github/gazsp/baum?branch=master) [![StyleCI](https://styleci.io/repos/47506280/shield)](https://styleci.io/repos/47506280)
+# Baum <a href="https://travis-ci.org/dogadogmbh/baum"><img src="https://travis-ci.org/dogadogmbh/baum.svg?branch=master"></a> [![Coverage Status](https://coveralls.io/repos/github/dogadogmbh/baum/badge.svg?branch=master)](https://coveralls.io/github/dogadogmbh/baum?branch=master)
+
+## Forked from [dogadogmbh/baum](https://github.com/dogadogmbh/baum) - Fixed a critical bug with wrong database transaction.
+
+**Fixed a bug that destroys the nested set when multiple `INSERT` or `DELETE` operations are running at the same time.** 
+
+It's really difficult to describe and to reproduce, but operations that require to rebuild the tree can run into an error when doing it at the same time.
+
+Before bugfixing only the rebuilding of the tree was inside a transaction.
+The actual operation e.g. `INSERT` or `DELETE` a node is not inside.
+
+Suppose that one node is deleted, the rebuild in progress...
+Then nearly exactly at same time a second node is deleted and the second rebuild stops because of table locks.
+After the tree is broken.
+
+**Error**
+
+The application log shows following errors. 
+
+```bash
+SQLSTATE[40001]: Serialization failure: 1213 Deadlock found when trying to get lock; try restarting transaction
+```
+
+```bash
+SQLSTATE[HY000]: General error: 2014 Cannot execute queries while other unbuffered queries are active.  Consider using PDOStatement::fetchAll().  Alternatively, if your code is only ever going to run against mysql, you may enable query buffering by setting the PDO::MYSQL_ATTR_USE_BUFFERED_QUERY attribute.
+```
+
+**Solution**
+
+We fixed it with starting a new further transaction earlier. Before writing to database at the first time. We also have to commit that transactions later. Therefore we overrid the methods `delete` and `finishSave` in the class `Node`.
+
 
 ## Forked from [gazsp/baum](https://github.com/gazsp/baum) - Continuing development and fixing failing unit tests on Laravel 5.x
 
@@ -371,7 +401,7 @@ Baum provides some very basic query scopes for accessing the root and leaf nodes
 Category::roots()
 
 // All leaf nodes (nodes at the end of a branch)
-Category:allLeaves()
+Category:leaves()
 ```
 
 You may also be interested in only the first root:

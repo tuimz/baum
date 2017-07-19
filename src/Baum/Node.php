@@ -846,23 +846,6 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     }
 
     /**
-     * Instance scope targeting all of its nested children which do not have
-     * children.
-     *
-     * @return Builder
-     */
-    public function leaves()
-    {
-        $grammar = $this->getConnection()->getQueryGrammar();
-
-        $rgtCol = $grammar->wrap($this->getQualifiedRightColumnName());
-        $lftCol = $grammar->wrap($this->getQualifiedLeftColumnName());
-
-        return $this->descendants()
-            ->whereRaw($rgtCol . ' - ' . $lftCol . ' = 1');
-    }
-
-    /**
      * Return all of its nested children which do not have children.
      *
      * @param array $columns
@@ -872,24 +855,6 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     public function getLeaves($columns = ['*'])
     {
         return $this->leaves()->get($columns);
-    }
-
-    /**
-     * Instance scope targeting all of its nested children which are between the
-     * root and the leaf nodes (middle branch).
-     *
-     * @return Builder
-     */
-    public function trunks()
-    {
-        $grammar = $this->getConnection()->getQueryGrammar();
-
-        $rgtCol = $grammar->wrap($this->getQualifiedRightColumnName());
-        $lftCol = $grammar->wrap($this->getQualifiedLeftColumnName());
-
-        return $this->descendants()
-            ->whereNotNull($this->getQualifiedParentColumnName())
-            ->whereRaw($rgtCol . ' - ' . $lftCol . ' != 1');
     }
 
     /**
