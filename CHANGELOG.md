@@ -1,3 +1,7 @@
+## 1.1.6
+_Jul 18 2017_
+* Tested/Added backwords compatibility with Laravel 5.1 [https://github.com/dogadogmbh/baum/commit/77e334f63b36b0be499ae546a7d2641b6befde6d](https://github.com/dogadogmbh/baum/commit/77e334f63b36b0be499ae546a7d2641b6befde6d)
+
 ## 1.1.5
 _Mar 27 2015_
 
