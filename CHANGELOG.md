@@ -1,3 +1,26 @@
+## 1.2.1
+_Jul 20 2017_
+* Remove `hhvm` from `.travis.yml` because it is not supported from `Laravel`
+* Static function `ancestorsAndSelf` transformed into `scopeAncestorsAndSelf`
+* Static function `ancestors` transformed into `scopeAncestors`
+* Static function `siblingsAndSelf` transformed into `scopeSiblingsAndSelf`
+* Static function `siblings` transformed into `scopeSiblings`
+* Static function `descendantsAndSelf` transformed into `scopeDescendantsAndSelf`
+* Static function `descendants` transformed into `scopeDescendants`
+
+## 1.2.0
+_Jul 19 2017_
+* PhpDoc corrections
+* Bugfix with wrong transaction
+* Small refactorings
+* Static function `roots` transformed into `scopeRoots`
+* Static function `allLeaves` transformed into `scopeLeaves`. Original exists but deprecated.
+* Static function `allTrunks` transformed into `scopeTrunks`. Original exists but deprecated.
+* Fixed wrong namespace `\Illuminate\Support\Contracts\ArrayableInterface` to `\Illuminate\Contracts\Support\Arrayable`
+* Add missing method parameter types
+* Convert `is_null($var)` to `null === $var`
+* Fixed wrong type `NestedSet` to `Node`
+
 ## 1.1.6
 _Jul 18 2017_
 * Tested/Added backwords compatibility with Laravel 5.1 [https://github.com/dogadogmbh/baum/commit/77e334f63b36b0be499ae546a7d2641b6befde6d](https://github.com/dogadogmbh/baum/commit/77e334f63b36b0be499ae546a7d2641b6befde6d)
@@ -55,7 +78,7 @@ _Aug 25 2014_
 
 * enhancements
   - Add pessimistic locking into the library. Closes [#89].
-  - Add `trunks` family of methods: `allTrunks`, `trunks`, `getTrunks` and `isTrunk`. Closes [#59].
+  - Add `trunks` family of methods: `trunks`, `getTrunks` and `isTrunk`. Closes [#59].
   - Add a `force` option to the `rebuild` static method.
 
 ## 1.0.11

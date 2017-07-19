@@ -500,16 +500,7 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
      */
     public static function allLeaves()
     {
-        $instance = new static();
-
-        $grammar = $instance->getConnection()->getQueryGrammar();
-
-        $rgtCol = $grammar->wrap($instance->getQualifiedRightColumnName());
-        $lftCol = $grammar->wrap($instance->getQualifiedLeftColumnName());
-
-        return $instance->newQuery()
-            ->whereRaw($rgtCol . ' - ' . $lftCol . ' = 1')
-            ->orderBy($instance->getQualifiedOrderColumnName());
+        return static::leaves();
     }
 
     /**
@@ -542,16 +533,7 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
      */
     public static function allTrunks()
     {
-        $instance = new static();
-
-        $grammar = $instance->getConnection()->getQueryGrammar();
-        $rgtCol = $grammar->wrap($instance->getQualifiedRightColumnName());
-        $lftCol = $grammar->wrap($instance->getQualifiedLeftColumnName());
-
-        return $instance->newQuery()
-            ->whereNotNull($instance->getParentColumnName())
-            ->whereRaw($rgtCol . ' - ' . $lftCol . ' != 1')
-            ->orderBy($instance->getQualifiedOrderColumnName());
+        return static::trunks();
     }
 
     /**
@@ -731,11 +713,12 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
      * Instance scope which targes all the ancestor chain nodes including
      * the current one.
      *
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
-    public function ancestorsAndSelf()
+    public function scopeAncestorsAndSelf(Builder $query)
     {
-        return $this->newNestedSetQuery()
+        return $query
             ->where($this->getLeftColumnName(), '<=', $this->getLeft())
             ->where($this->getRightColumnName(), '>=', $this->getRight());
     }
@@ -768,11 +751,12 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
      * Instance scope which targets all the ancestor chain nodes excluding
      * the current one.
      *
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
-    public function ancestors()
+    public function scopeAncestors(Builder $query)
     {
-        return $this->ancestorsAndSelf()->withoutSelf();
+        return $query->ancestorsAndSelf()->withoutSelf();
     }
 
     /**
@@ -803,12 +787,12 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     /**
      * Instance scope which targets all children of the parent, including self.
      *
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
-    public function siblingsAndSelf()
+    public function scopeSiblingsAndSelf(Builder $query)
     {
-        return $this->newNestedSetQuery()
-            ->where($this->getParentColumnName(), $this->getParentId());
+        return $query->where($this->getParentColumnName(), $this->getParentId());
     }
 
     /**
@@ -826,11 +810,12 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     /**
      * Instance scope targeting all children of the parent, except self.
      *
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
-    public function siblings()
+    public function scopeSiblings(Builder $query)
     {
-        return $this->siblingsAndSelf()->withoutSelf();
+        return $query->siblingsAndSelf()->withoutSelf();
     }
 
     /**
@@ -872,11 +857,12 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     /**
      * Scope targeting itself and all of its nested children.
      *
+     * @param Builder $query
      * @return Builder
      */
-    public function descendantsAndSelf()
+    public function scopeDescendantsAndSelf(Builder $query)
     {
-        return $this->newNestedSetQuery()
+        return $query
             ->where($this->getLeftColumnName(), '>=', $this->getLeft())
             ->where($this->getLeftColumnName(), '<', $this->getRight());
     }
@@ -916,11 +902,12 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     /**
      * Set of all children & nested children.
      *
+     * @param Builder $query
      * @return Builder
      */
-    public function descendants()
+    public function scopeDescendants(Builder $query)
     {
-        return $this->descendantsAndSelf()->withoutSelf();
+        return $query->descendantsAndSelf()->withoutSelf();
     }
 
     /**
@@ -947,7 +934,7 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     /**
      * Set of "immediate" descendants (aka children), alias for the children relation.
      *
-     * @return Builder
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function immediateDescendants()
     {
@@ -974,7 +961,7 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
      */
     public function getLevel()
     {
-        if (is_null($this->getParentId())) {
+        if (null === $this->getParentId()) {
             return 0;
         }
 

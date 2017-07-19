@@ -70,7 +70,7 @@ class CategoryHierarchyTest extends CategoryTestCase
         $this->assertContains('Root 2', $leaves);
     }
 
-    public function testAllTrunksStatic()
+    public function testTrunksStatic()
     {
         $allTrunks = Category::trunks()->get();
 

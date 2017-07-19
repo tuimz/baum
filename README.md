@@ -1,6 +1,6 @@
 # Baum <a href="https://travis-ci.org/dogadogmbh/baum"><img src="https://travis-ci.org/dogadogmbh/baum.svg?branch=master"></a> [![Coverage Status](https://coveralls.io/repos/github/dogadogmbh/baum/badge.svg?branch=master)](https://coveralls.io/github/dogadogmbh/baum?branch=master)
 
-## Forked from [dogadogmbh/baum](https://github.com/dogadogmbh/baum) - Fixed a critical bug with wrong database transaction.
+## Forked from [gazsp/baum](https://github.com/gazsp/baum) - Fixed a critical bug with wrong database transaction.
 
 **Fixed a bug that destroys the nested set when multiple `INSERT` or `DELETE` operations are running at the same time.** 
 
@@ -30,7 +30,7 @@ SQLSTATE[HY000]: General error: 2014 Cannot execute queries while other unbuffer
 We fixed it with starting a new further transaction earlier. Before writing to database at the first time. We also have to commit that transactions later. Therefore we overrid the methods `delete` and `finishSave` in the class `Node`.
 
 
-## Forked from [gazsp/baum](https://github.com/gazsp/baum) - Continuing development and fixing failing unit tests on Laravel 5.x
+## Forked from [etrepat/baum](https://github.com/etrepat/baum) - Continuing development and fixing failing unit tests on Laravel 5.x
 
 **If you find a bug, please file an issue and submit a pull request with a failing unit test**
 
@@ -130,7 +130,7 @@ ordinary trees are suddenly quite fast. Nifty, isn't it?
 Baum works with Laravel 5 onwards. You can add it to your `composer.json` file
 with:
 
-    "dogadogmbh/baum": "~1.1"
+    "dogadogmbh/baum": ">=1.2.0"
 
 Run `composer install` to install it.
 
