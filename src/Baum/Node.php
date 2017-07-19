@@ -122,12 +122,28 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
         });
 
         static::saved(function (Node $node) {
+            /**
+             * Fixes a bug that destroys the nested set when multiple create or delete operations are running at the
+             * same time. Operations that require to rebuild the tree. Before only the rebuilding of the tree was inside
+             * a transaction. The node is deleted, the rebuild in progress... Then a second node is deleted and the
+             * second rebuild stops because of table locks. After the tree is broken.
+             *
+             * This early transaction should prevent of this case.
+             */
             $node->getConnection()->beginTransaction();
             $node->moveToNewParent();
             $node->setDepth();
         });
 
         static::deleting(function (Node $node) {
+            /**
+             * Fixes a bug that destroys the nested set when multiple create or delete operations are running at the
+             * same time. Operations that require to rebuild the tree. Before only the rebuilding of the tree was inside
+             * a transaction. The node is deleted, the rebuild in progress... Then a second node is deleted and the
+             * second rebuild stops because of table locks. After the tree is broken.
+             *
+             * This early transaction should prevent of this case.
+             */
             $node->getConnection()->beginTransaction();
             $node->destroyDescendants();
         });
@@ -153,6 +169,17 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     {
         parent::finishSave($options);
 
+        /**
+         * Fixes a bug that destroys the nested set when multiple create or delete operations are running at the
+         * same time. Operations that require to rebuild the tree. Before only the rebuilding of the tree was inside
+         * a transaction. The node is deleted, the rebuild in progress... Then a second node is deleted and the
+         * second rebuild stops because of table locks. After the tree is broken.
+         *
+         * This early transaction should prevent of this case.
+         *
+         * Only commit if transaction was started
+         * @link https://github.com/laravel/framework/issues/12382
+         */
         if ($this->getConnection()->transactionLevel() > 0) {
             $this->getConnection()->commit();
         }
@@ -169,6 +196,17 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     {
         $return = parent::delete();
 
+        /**
+         * Fixes a bug that destroys the nested set when multiple create or delete operations are running at the
+         * same time. Operations that require to rebuild the tree. Before only the rebuilding of the tree was inside
+         * a transaction. The node is deleted, the rebuild in progress... Then a second node is deleted and the
+         * second rebuild stops because of table locks. After the tree is broken.
+         *
+         * This early transaction should prevent of this case.
+         *
+         * Only commit if transaction was started
+         * @link https://github.com/laravel/framework/issues/12382
+         */
         if ($this->getConnection()->transactionLevel() > 0) {
             $this->getConnection()->commit();
         }
