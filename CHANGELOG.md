@@ -1,3 +1,7 @@
+## 1.3.0
+_Jul 20 2017_
+* Changed filestructure to switch from `PSR-0` to `PSR-4`
+
 ## 1.2.1
 _Jul 20 2017_
 * Remove `hhvm` from `.travis.yml` because it is not supported from `Laravel`
