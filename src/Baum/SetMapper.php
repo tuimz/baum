@@ -5,6 +5,10 @@ namespace Baum;
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
 
+/**
+ * Class SetMapper
+ * @package Baum
+ */
 class SetMapper
 {
     /**
@@ -37,7 +41,7 @@ class SetMapper
     /**
      * Maps a tree structure into the database. Unguards & wraps in transaction.
      *
-     * @param array|Arrayable
+     * @param array|Arrayable $nodeList
      * @return bool
      */
     public function map($nodeList)
@@ -57,7 +61,7 @@ class SetMapper
      * Maps a tree structure into the database without unguarding nor wrapping
      * inside a transaction.
      *
-     * @param   array|Arrayable
+     * @param array|Arrayable $nodeList
      *
      * @return bool
      */
@@ -90,11 +94,11 @@ class SetMapper
      * Maps a tree structure into the database.
      *
      * @param array $tree
-     * @param mixed $parent
-     *
+     * @param int|string|null $parentKey
+     * @param array $affectedKeys
      * @return bool
      */
-    protected function mapTreeRecursive(array $tree, $parentKey = null, &$affectedKeys = [])
+    protected function mapTreeRecursive(array $tree, $parentKey = null, array &$affectedKeys = [])
     {
         // For every attribute entry: We'll need to instantiate a new node either
         // from the database (if the primary key was supplied) or a new instance. Then,
@@ -106,7 +110,7 @@ class SetMapper
             $node = $this->firstOrNew($this->getSearchAttributes($attributes));
 
             $data = $this->getDataAttributes($attributes);
-            if (!is_null($parentKey)) {
+            if (null !== $parentKey) {
                 $data[$node->getParentColumnName()] = $parentKey;
             }
 
@@ -140,6 +144,10 @@ class SetMapper
         return true;
     }
 
+    /**
+     * @param array|string $attributes
+     * @return array
+     */
     protected function getSearchAttributes($attributes)
     {
         $searchable = [$this->node->getKeyName()];
@@ -147,6 +155,10 @@ class SetMapper
         return array_only($attributes, $searchable);
     }
 
+    /**
+     * @param array|string $attributes
+     * @return array
+     */
     protected function getDataAttributes($attributes)
     {
         $exceptions = [$this->node->getKeyName(), $this->getChildrenKeyName()];
@@ -154,6 +166,10 @@ class SetMapper
         return array_except($attributes, $exceptions);
     }
 
+    /**
+     * @param mixed $attributes
+     * @return mixed
+     */
     protected function firstOrNew($attributes)
     {
         $className = get_class($this->node);
@@ -165,6 +181,9 @@ class SetMapper
         return forward_static_call([$className, 'firstOrNew'], $attributes);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     protected function pruneScope()
     {
         if ($this->node->exists) {
@@ -174,11 +193,19 @@ class SetMapper
         return $this->node->newNestedSetQuery();
     }
 
+    /**
+     * @param array $keys
+     * @return bool
+     */
     protected function deleteUnaffected($keys = [])
     {
         return $this->pruneScope()->whereNotIn($this->node->getKeyName(), $keys)->delete();
     }
 
+    /**
+     * @param Closure $callback
+     * @return mixed
+     */
     protected function wrapInTransaction(Closure $callback)
     {
         return $this->node->getConnection()->transaction($callback);

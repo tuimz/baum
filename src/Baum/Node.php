@@ -162,7 +162,7 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     /**
      * Finish processing on a successful save operation.
      *
-     * @param  array  $options
+     * @param  array $options
      * @return void
      */
     public function finishSave(array $options)
@@ -388,7 +388,7 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
         $prefix = $this->getTable() . '.';
 
         return array_map(function ($c) use ($prefix) {
-            return $prefix.$c;
+            return $prefix . $c;
         }, $this->getScopedColumns());
     }
 
@@ -508,7 +508,7 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
         $lftCol = $grammar->wrap($instance->getQualifiedLeftColumnName());
 
         return $instance->newQuery()
-            ->whereRaw($rgtCol.' - '.$lftCol.' = 1')
+            ->whereRaw($rgtCol . ' - ' . $lftCol . ' = 1')
             ->orderBy($instance->getQualifiedOrderColumnName());
     }
 
@@ -529,7 +529,7 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
         $lftCol = $grammar->wrap($instance->getQualifiedLeftColumnName());
 
         return $query
-            ->whereRaw($rgtCol.' - '.$lftCol.' = 1')
+            ->whereRaw($rgtCol . ' - ' . $lftCol . ' = 1')
             ->orderBy($instance->getQualifiedOrderColumnName());
     }
 
@@ -736,8 +736,8 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     public function ancestorsAndSelf()
     {
         return $this->newNestedSetQuery()
-                    ->where($this->getLeftColumnName(), '<=', $this->getLeft())
-                    ->where($this->getRightColumnName(), '>=', $this->getRight());
+            ->where($this->getLeftColumnName(), '<=', $this->getLeft())
+            ->where($this->getRightColumnName(), '>=', $this->getRight());
     }
 
     /**
@@ -808,7 +808,7 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     public function siblingsAndSelf()
     {
         return $this->newNestedSetQuery()
-                    ->where($this->getParentColumnName(), $this->getParentId());
+            ->where($this->getParentColumnName(), $this->getParentId());
     }
 
     /**
@@ -859,7 +859,7 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
         $lftCol = $grammar->wrap($this->getQualifiedLeftColumnName());
 
         return $this->descendants()
-                    ->whereRaw($rgtCol.' - '.$lftCol.' = 1');
+            ->whereRaw($rgtCol . ' - ' . $lftCol . ' = 1');
     }
 
     /**
@@ -888,8 +888,8 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
         $lftCol = $grammar->wrap($this->getQualifiedLeftColumnName());
 
         return $this->descendants()
-                    ->whereNotNull($this->getQualifiedParentColumnName())
-                    ->whereRaw($rgtCol.' - '.$lftCol.' != 1');
+            ->whereNotNull($this->getQualifiedParentColumnName())
+            ->whereRaw($rgtCol . ' - ' . $lftCol . ' != 1');
     }
 
     /**
@@ -912,8 +912,8 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     public function descendantsAndSelf()
     {
         return $this->newNestedSetQuery()
-                    ->where($this->getLeftColumnName(), '>=', $this->getLeft())
-                    ->where($this->getLeftColumnName(), '<', $this->getRight());
+            ->where($this->getLeftColumnName(), '>=', $this->getLeft())
+            ->where($this->getLeftColumnName(), '<', $this->getRight());
     }
 
     /**
@@ -944,8 +944,8 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     public function getOthersAtSameDepth()
     {
         return $this->newNestedSetQuery()
-                    ->where($this->getDepthColumnName(), '=', $this->getDepth())
-                    ->withoutSelf();
+            ->where($this->getDepthColumnName(), '=', $this->getDepth())
+            ->withoutSelf();
     }
 
     /**
@@ -1202,7 +1202,8 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     /**
      * Make the node the last child of ...
      *
-     * @return Node $node
+     * @param Node $node
+     * @return Node
      */
     public function makeLastChildOf(Node $node)
     {
@@ -1450,6 +1451,7 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
 
     /**
      * Restores all of the current node's descendants.
+     * Only when using SoftDeletes trait
      *
      * @return void
      * @throws \Throwable
@@ -1467,21 +1469,21 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
 
         $this->getConnection()->transaction(function () use ($self) {
             $self->newNestedSetQuery()
-             ->withTrashed()
-             ->where($self->getLeftColumnName(), '>', $self->getLeft())
-             ->where($self->getRightColumnName(), '<', $self->getRight())
-             ->update([
-                 $self->getDeletedAtColumn() => null,
-                 $self->getUpdatedAtColumn() => $self->{$self->getUpdatedAtColumn()},
-             ]);
+                ->withTrashed()
+                ->where($self->getLeftColumnName(), '>', $self->getLeft())
+                ->where($self->getRightColumnName(), '<', $self->getRight())
+                ->update([
+                    $self->getDeletedAtColumn() => null,
+                    $self->getUpdatedAtColumn() => $self->{$self->getUpdatedAtColumn()},
+                ]);
         });
     }
 
     /**
-    * Return an key-value array indicating the node's depth with $seperator.
-    *
-    * @return array
-    */
+     * Return an key-value array indicating the node's depth with $seperator.
+     *
+     * @return array
+     */
     public static function getNestedList($column, $key = null, $seperator = ' ', $symbol = '')
     {
         $instance = new static();
@@ -1517,10 +1519,10 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
      * Main move method. Here we handle all node movements with the corresponding
      * lft/rgt index updates.
      *
-     * @param \Baum\Node|int $target
+     * @param Node|int $target
      * @param string $position
      *
-     * @return \Baum\Node
+     * @return Node
      */
     protected function moveTo($target, $position)
     {
@@ -1548,8 +1550,8 @@ abstract class Node extends \Baum\Extensions\Eloquent\Model
     /**
      * Return an array with the last node we could reach and its nesting level.
      *
-     * @param \Baum\Node $node
-     * @param int       $nesting
+     * @param Node $node
+     * @param int $nesting
      *
      * @return array
      */
