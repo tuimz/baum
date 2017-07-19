@@ -38,8 +38,8 @@
     "fabpot/php-cs-fixer": "^1.11"
   },
   "autoload": {
-    "psr-0": {
-      "Baum": "src/"
+    "psr-4": {
+      "Baum\\": "src/"
     }
   }
 }

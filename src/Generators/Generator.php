@@ -32,7 +32,7 @@ abstract class Generator
    */
   public function getStubPath()
   {
-      return __DIR__.'/stubs';
+      return __DIR__ . '/stubs';
   }
 
   /**
