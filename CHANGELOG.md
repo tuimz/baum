@@ -1,3 +1,8 @@
+## 1.4.0
+_Mar 6 2019_
+* Changed vendor from `dogadogmbh` to `dogado`
+* Removed boris
+
 ## 1.3.0
 _Jul 20 2017_
 * Changed filestructure to switch from `PSR-0` to `PSR-4`
