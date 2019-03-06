@@ -130,7 +130,7 @@ ordinary trees are suddenly quite fast. Nifty, isn't it?
 Baum works with Laravel 5 onwards. You can add it to your `composer.json` file
 with:
 
-    "dogadogmbh/baum": ">=1.3.0"
+    "dogado/baum": ">=1.3.0"
 
 Run `composer install` to install it.
 
